@@ -1,0 +1,336 @@
+Sub Medicamentos_Ospegap()
+'
+' Macro para karina
+'
+'
+'   Optimización de la MACRO
+    Application.ScreenUpdating = False
+    Application.EnableEvents = False
+
+    Sheets.Add After:=Sheets(Sheets.Count)
+    Sheets("Hoja1").Select
+    Rows("1:1").Select
+    Selection.Delete Shift:=xlUp
+    Cells.Select
+    Range("B1").Activate
+    Cells.EntireColumn.AutoFit
+    ActiveWindow.SmallScroll ToRight:=-1
+    Sheets("Hoja1").Select
+    Columns("B:B").Select
+    Range("B2").Activate
+    Application.CutCopyMode = False
+    Selection.Copy
+    Sheets("Hoja2").Select
+    Columns("I:I").Select
+    ActiveSheet.Paste
+    Sheets("Hoja1").Select
+    Columns("C:C").Select
+    Range("C2").Activate
+    Application.CutCopyMode = False
+    Selection.Copy
+    Sheets("Hoja2").Select
+    Columns("B:B").Select
+    ActiveSheet.Paste
+    Sheets("Hoja1").Select
+    Columns("D:D").Select
+    Range("D2").Activate
+    Application.CutCopyMode = False
+    Selection.Copy
+    Sheets("Hoja2").Select
+    Columns("D:D").Select
+    ActiveSheet.Paste
+    Sheets("Hoja1").Select
+    Columns("E:E").Select
+    Range("E2").Activate
+    Application.CutCopyMode = False
+    Selection.Copy
+    Sheets("Hoja2").Select
+    Columns("E:E").Select
+    ActiveSheet.Paste
+    Sheets("Hoja1").Select
+    Columns("F:F").Select
+    Range("F2").Activate
+    Application.CutCopyMode = False
+    Selection.Copy
+    Sheets("Hoja2").Select
+    Columns("G:G").Select
+    ActiveSheet.Paste
+    Sheets("Hoja1").Select
+    Columns("G:G").Select
+    Range("G2").Activate
+    Application.CutCopyMode = False
+    Selection.Copy
+    Sheets("Hoja2").Select
+    Columns("F:F").Select
+    ActiveSheet.Paste
+    Sheets("Hoja1").Select
+    Columns("H:H").Select
+    Range("H2").Activate
+    Application.CutCopyMode = False
+    Selection.Copy
+    Sheets("Hoja2").Select
+    Columns("H:H").Select
+    ActiveSheet.Paste
+    Sheets("Hoja1").Select
+    Columns("J:J").Select
+    Range("J2").Activate
+    Application.CutCopyMode = False
+    Selection.Copy
+    Sheets("Hoja2").Select
+    Columns("A:A").Select
+    ActiveSheet.Paste
+    Sheets("Hoja1").Select
+    Columns("K:K").Select
+    Range("K2").Activate
+    Application.CutCopyMode = False
+    Selection.Copy
+    Sheets("Hoja2").Select
+    Columns("J:J").Select
+    ActiveSheet.Paste
+    Application.CutCopyMode = False
+    Range("A1").Select
+    Application.CutCopyMode = False
+    ActiveCell.FormulaR1C1 = "FECHA DE FACTURA"
+    Range("B1").Select
+    ActiveCell.FormulaR1C1 = "TIPO"
+    Range("C1").Select
+    ActiveCell.FormulaR1C1 = "PUNTO DE VENTA"
+    Range("D1").Select
+    ActiveCell.FormulaR1C1 = "Nº FACTURA"
+    Range("E1").Select
+    ActiveCell.FormulaR1C1 = "Nº ENTRADA"
+    Range("F1").Select
+    ActiveCell.FormulaR1C1 = "CUIT"
+    Range("G1").Select
+    ActiveCell.FormulaR1C1 = "RAZON SOCIAL"
+    Range("H1").Select
+    ActiveCell.FormulaR1C1 = "IMPORTE"
+    Range("I1").Select
+    ActiveCell.FormulaR1C1 = "FECHA DE INGRESO"
+    Range("J1").Select
+    ActiveCell.FormulaR1C1 = "FECHA DE VENCIMIENTO"
+    Range("K1").Select
+    ActiveCell.FormulaR1C1 = "FECHA DE ENTRADA AUDIRED"
+    Range("L1").Select
+    ActiveCell.FormulaR1C1 = "Episodio Gestion de Medic."
+    Range("M1").Select
+    ActiveCell.FormulaR1C1 = "DEBITO"
+    Range("N1").Select
+    ActiveCell.FormulaR1C1 = "TOTAL A PAGAR"
+    Range("O1").Select
+    ActiveCell.FormulaR1C1 = "OBSERVACIONES"
+    Range("P1").Select
+    ActiveCell.FormulaR1C1 = "FECHA/SALIDA"
+    
+    Range("A1").Select
+    Range(Selection, Selection.End(xlToRight)).Select
+    Selection.RowHeight = 36
+    With Selection.Font
+        .Name = "Calibri"
+        .Size = 9
+        .Strikethrough = False
+        .Superscript = False
+        .Subscript = False
+        .OutlineFont = False
+        .Shadow = False
+        .Underline = xlUnderlineStyleNone
+        .ThemeColor = xlThemeColorLight1
+        .TintAndShade = 0
+        .ThemeFont = xlThemeFontMinor
+    End With
+    With Selection.Interior
+        .PatternColorIndex = 15
+        .ThemeColor = xlThemeColorDark1
+        .TintAndShade = -0.249977111117893
+        .PatternTintAndShade = 0
+    End With
+    With Selection
+        .VerticalAlignment = xlCenter
+        .WrapText = False
+        .Orientation = 0
+        .AddIndent = False
+        .IndentLevel = 0
+        .ReadingOrder = xlContext
+        .MergeCells = False
+    End With
+    With Selection
+        .VerticalAlignment = xlCenter
+        .WrapText = True
+        .Orientation = 0
+        .AddIndent = False
+        .IndentLevel = 0
+        .ReadingOrder = xlContext
+        .MergeCells = False
+    End With
+    Selection.Borders(xlDiagonalDown).LineStyle = xlNone
+    Selection.Borders(xlDiagonalUp).LineStyle = xlNone
+    With Selection.Borders(xlEdgeLeft)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlEdgeTop)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlEdgeBottom)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlEdgeRight)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlInsideVertical)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlInsideHorizontal)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    Selection.Font.Bold = True
+    Cells.EntireColumn.AutoFit
+    Columns("C:C").ColumnWidth = 5.86
+    Columns("E:E").ColumnWidth = 7.29
+    Columns("J:J").ColumnWidth = 11.14
+    Columns("K:K").ColumnWidth = 9.43
+    Columns("K:K").ColumnWidth = 8.14
+    Columns("K:K").ColumnWidth = 8.86
+    Columns("K:K").ColumnWidth = 9.86
+    Range("C1").Select
+    With Selection
+        .HorizontalAlignment = xlCenter
+        .VerticalAlignment = xlCenter
+        .WrapText = True
+        .Orientation = 0
+        .AddIndent = False
+        .IndentLevel = 0
+        .ShrinkToFit = False
+        .ReadingOrder = xlContext
+        .MergeCells = False
+    End With
+    Range("K1").Select
+    With Selection
+        .HorizontalAlignment = xlCenter
+        .VerticalAlignment = xlCenter
+        .WrapText = True
+        .Orientation = 0
+        .AddIndent = False
+        .IndentLevel = 0
+        .ShrinkToFit = False
+        .ReadingOrder = xlContext
+        .MergeCells = False
+    End With
+    Columns("O:O").ColumnWidth = 19.57
+    Columns("P:P").ColumnWidth = 12.71
+    Columns("P:P").Select
+    With Selection
+        .HorizontalAlignment = xlCenter
+        .Orientation = 0
+        .AddIndent = False
+        .IndentLevel = 0
+        .ShrinkToFit = False
+        .ReadingOrder = xlContext
+        .MergeCells = False
+    End With
+    Columns("O:O").Select
+    With Selection
+        .HorizontalAlignment = xlCenter
+        .Orientation = 0
+        .AddIndent = False
+        .IndentLevel = 0
+        .ShrinkToFit = False
+        .ReadingOrder = xlContext
+        .MergeCells = False
+    End With
+    Columns("N:N").Select
+    With Selection
+        .HorizontalAlignment = xlCenter
+        .Orientation = 0
+        .AddIndent = False
+        .IndentLevel = 0
+        .ShrinkToFit = False
+        .ReadingOrder = xlContext
+        .MergeCells = False
+    End With
+    Range("O5").Select
+    Columns("N:N").ColumnWidth = 9.29
+    Columns("M:M").Select
+    With Selection
+        .HorizontalAlignment = xlCenter
+        .Orientation = 0
+        .AddIndent = False
+        .IndentLevel = 0
+        .ShrinkToFit = False
+        .ReadingOrder = xlContext
+        .MergeCells = False
+    End With
+    Range("J6").Select
+    Columns("I:I").ColumnWidth = 10.86
+    Columns("J:J").ColumnWidth = 11
+    Columns("I:I").ColumnWidth = 11
+    Columns("K:K").ColumnWidth = 11
+    Columns("L:L").ColumnWidth = 8
+    Columns("M:M").ColumnWidth = 8
+    Columns("L:L").ColumnWidth = 10
+    Columns("M:M").ColumnWidth = 10
+    Columns("A:A").ColumnWidth = 11
+    Columns("H:H").ColumnWidth = 10
+    Columns("F:F").ColumnWidth = 11
+    ActiveWindow.SmallScroll Down:=-9
+    Range("A2").Select
+    Range(Selection, ActiveCell.SpecialCells(xlLastCell)).Select
+    Selection.Borders(xlDiagonalDown).LineStyle = xlNone
+    Selection.Borders(xlDiagonalUp).LineStyle = xlNone
+    With Selection.Borders(xlEdgeLeft)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlEdgeTop)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlEdgeBottom)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlEdgeRight)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlInsideVertical)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlInsideHorizontal)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    Range("A2").Select
+    Sheets("Hoja2").Select
+    Sheets("Hoja2").Move
+End Sub

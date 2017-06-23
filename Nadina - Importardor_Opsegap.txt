@@ -1,0 +1,218 @@
+Sub Importardor_Opsegap()
+'
+' Macro para Nadina F.
+'
+'
+'   Optimización de la MACRO
+    Application.ScreenUpdating = False
+    Application.EnableEvents = False
+    
+    Rows("1:1").Select
+    Selection.Delete Shift:=xlUp
+    Columns("B:B").Select
+    Range("B2").Activate
+    Selection.SpecialCells(xlCellTypeBlanks).Select
+    Selection.EntireRow.Delete
+    ActiveWindow.SmallScroll Down:=-15
+    Columns("C:C").Select
+    Selection.Copy
+    Worksheets.Add(After:=Worksheets(Worksheets.Count)).Name = "Hoja2"
+    Sheets("Hoja2").Select
+    Columns("C:C").Select
+    ActiveSheet.Paste
+    Sheets("Hoja1").Select
+    Columns("D:D").Select
+    
+    Selection.Copy
+    Sheets("Hoja2").Select
+    Columns("D:D").Select
+    ActiveSheet.Paste
+    Sheets("Hoja1").Select
+    Columns("E:E").Select
+    
+    Selection.Copy
+    Sheets("Hoja2").Select
+    Columns("E:E").Select
+    ActiveSheet.Paste
+    Sheets("Hoja1").Select
+    Columns("F:F").Select
+    
+    Selection.Copy
+    Sheets("Hoja2").Select
+    Columns("F:F").Select
+    ActiveSheet.Paste
+    Sheets("Hoja1").Select
+    Columns("G:G").Select
+    
+    Selection.Copy
+    Sheets("Hoja2").Select
+    Columns("G:G").Select
+    ActiveSheet.Paste
+    Sheets("Hoja1").Select
+    Columns("H:H").Select
+    
+    Selection.Copy
+    Sheets("Hoja2").Select
+    Columns("H:H").Select
+    ActiveSheet.Paste
+    Sheets("Hoja1").Select
+    Columns("I:I").Select
+    
+    Selection.Copy
+    Sheets("Hoja2").Select
+    Columns("I:I").Select
+    ActiveSheet.Paste
+    Sheets("Hoja1").Select
+    Columns("K:K").Select
+    
+    Selection.Copy
+    Sheets("Hoja2").Select
+    Columns("K:K").Select
+    ActiveSheet.Paste
+    Sheets("Hoja1").Select
+    ActiveWindow.ScrollColumn = 3
+    Columns("N:N").Select
+    
+    Selection.Copy
+    Sheets("Hoja2").Select
+    Columns("L:L").Select
+    ActiveSheet.Paste
+    Sheets("Hoja1").Select
+    Columns("J:J").Select
+    ActiveWindow.ScrollColumn = 2
+    Columns("B:B").Select
+    
+    Selection.Copy
+    Sheets("Hoja2").Select
+    Columns("J:J").Select
+    ActiveSheet.Paste
+    Sheets("Hoja1").Select
+    Columns("J:J").Select
+    
+    Selection.Copy
+    Sheets("Hoja2").Select
+    Columns("B:B").Select
+    ActiveSheet.Paste
+    Range("A2").Select
+    Range(Selection, Selection.End(xlDown)).Select
+    Range(Selection, Selection.End(xlToRight)).Select
+    Range("A2").Select
+    Range(Selection, ActiveCell.SpecialCells(xlLastCell)).Select
+    Range("B1").Select
+    Range(Selection, Selection.End(xlDown)).Select
+    Range("A1").Select
+    ActiveCell.FormulaR1C1 = "ID Ospegap"
+    Range("B1").Select
+    ActiveCell.FormulaR1C1 = "Fecha"
+    Range("C1").Select
+    ActiveCell.FormulaR1C1 = "Tipo"
+    Range("D1").Select
+    ActiveCell.FormulaR1C1 = "Número"
+    Range("E1").Select
+    ActiveCell.FormulaR1C1 = "Ent."
+    Range("F1").Select
+    ActiveCell.FormulaR1C1 = "Razón Social"
+    Range("G1").Select
+    ActiveCell.FormulaR1C1 = "CUIT"
+    Range("H1").Select
+    ActiveCell.FormulaR1C1 = "Importe"
+    Range("I1").Select
+    ActiveCell.FormulaR1C1 = "Observaciones"
+    Range("J1").Select
+    ActiveCell.FormulaR1C1 = "Fecha Reg."
+    Range("K1").Select
+    ActiveCell.FormulaR1C1 = "Fecha Vnc."
+    Range("L1").Select
+    ActiveCell.FormulaR1C1 = "Autor"
+    Range("B1").Select
+    Selection.Copy
+    Range("A1").Select
+    ActiveSheet.Paste
+    
+    ActiveCell.FormulaR1C1 = "ID Ospegap"
+    Range("B2").Select
+    Selection.End(xlDown).Select
+    nro_fila = ActiveCell.Row
+    Range("A2:A" & nro_fila).Select
+    With Selection
+        .Value = 777777
+    End With
+    
+    
+    Columns("A:A").Select
+    With Selection
+        .HorizontalAlignment = xlGeneral
+        .HorizontalAlignment = xlCenter
+        .WrapText = False
+        .Orientation = 0
+        .AddIndent = False
+        .IndentLevel = 0
+        .ShrinkToFit = False
+        .ReadingOrder = xlContext
+        .MergeCells = False
+    End With
+   
+    Columns("E:E").ColumnWidth = 5.57
+    Columns("E:E").EntireColumn.AutoFit
+    Columns("D:D").EntireColumn.AutoFit
+    Columns("C:C").EntireColumn.AutoFit
+    Columns("G:G").ColumnWidth = 11.43
+    Columns("H:H").EntireColumn.AutoFit
+    Columns("I:I").ColumnWidth = 34.14
+    Columns("I:I").EntireColumn.AutoFit
+    Columns("J:J").EntireColumn.AutoFit
+    Columns("K:K").EntireColumn.AutoFit
+    Columns("L:L").EntireColumn.AutoFit
+    Columns("F:F").ColumnWidth = 49.86
+    Columns("F:F").ColumnWidth = 51.43
+    Columns("F:F").ColumnWidth = 52.43
+    ActiveWindow.SmallScroll Down:=0
+    
+    Range("A2:L" & nro_fila).Select
+    Selection.Borders(xlDiagonalDown).LineStyle = xlNone
+    Selection.Borders(xlDiagonalUp).LineStyle = xlNone
+    With Selection.Borders(xlEdgeLeft)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlEdgeTop)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlEdgeBottom)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlEdgeRight)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlInsideVertical)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlInsideHorizontal)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    ActiveWindow.SmallScroll Down:=30
+    Range("A36:M285").Select
+    ActiveWindow.SmallScroll Down:=-15
+    Range("K264").Select
+    ActiveWindow.SmallScroll Down:=-75
+    ActiveWindow.SmallScroll Down:=-33
+    Range("A1").Select
+    Sheets("Hoja2").Move
+End Sub

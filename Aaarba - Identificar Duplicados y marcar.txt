@@ -1,0 +1,41 @@
+Sub Busca_duplicado_AAARBA()
+
+'   Macro para Eliminar Duplicados si toda la Fila es Igual.
+'   Luego, Marca la fila con posibles conceptos duplicados
+'   ORDEN PARA DETECTAR CONCEPTO DUPLICADO
+'       N: NRO - FACTURA
+'       K: IMPORTE CONCEPTO
+'       C: AFILIADO (NRO_AFIL)
+'       D: APELLIDO Y NOMBRE (PACIENTE)
+'       L: DETALLE CONCEPTO
+'       M: FECHA (F_PRESTACION)
+
+'   Variables
+    Final = Range("A1").End(xlDown).Row
+    cantidad = 0
+    detalle = ""
+
+'   Quitar Filas Duplicadas
+    Cells.Select
+    Selection.RemoveDuplicates _
+    Columns:=Array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19), Header:=xlNo
+
+'   Detectar conceptos Duplicados
+    For Fila = 1 To Final
+        If Application.WorksheetFunction.CountIfs( _
+             Range("N1:N" & Final), Range("N" & Fila), _
+             Range("K1:K" & Final), Range("K" & Fila), _
+             Range("C1:C" & Final), Range("C" & Fila), _
+             Range("D1:D" & Final), Range("D" & Fila), _
+             Range("L1:L" & Final), Range("L" & Fila), _
+             Range("M1:M" & Final), Range("M" & Fila) _
+         ) > 1 Then
+            Range(Fila & ":" & Fila).Interior.Color = RGB(255, 255, 200)
+            cantidad = cantidad + 1
+            detalle = detalle & "," & Fila
+        Else
+            Range("A" & Fila).Interior.Color = xlNone
+        End If
+    Next Fila
+    MsgBox "Se marcaron " & cantidad & " posibles duplicados"
+End Sub

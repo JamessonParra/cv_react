@@ -1,0 +1,383 @@
+Sub MACRO_AAARBA()
+'
+' MACRO_AAARBA Macro
+' Macro para ser ejecutada con CTRL+m. Ordenará y guardará todo en un directorio nuevo
+'
+' Acceso directo: CTRL+m
+'
+    Application.ScreenUpdating = False
+    Application.EnableEvents = False
+    
+'   Abrir el Archivo dinamicamente
+    ruta = ActiveWorkbook.Path
+    observacion = "Fechas (FACTURA, INGRESO y VENCIMIENTO) no verificadas"
+    tipo_documento = "Nro_Afiliado"
+    pestana_ejecutar = "Para importar"
+    pestana_construir = "importador"
+    
+'   Se muestra la ventanilla
+    With Application.FileDialog(msoFileDialogFilePicker)
+        .Title = "Elija el .xls para Adaptar"
+        .Filters.Clear
+        .Filters.Add "All Files", "*.*"
+        .Filters.Add "xls.*", "*.xls*"
+        .FilterIndex = 2
+        .AllowMultiSelect = False
+        .InitialFileName = ruta
+
+'       Guardamos el item seleccionado
+        If .Show Then
+            arch = .SelectedItems.Item(1)
+            Workbooks.Open arch
+        End If
+    End With
+   
+    Archivo_destino = ruta + "\Archivo final\TRANSFORMADO_" + ActiveWorkbook.Name
+    Set fso = CreateObject("Scripting.FileSystemObject")
+
+'   Validamos que el archivo no exista,
+    If fso.FileExists(Archivo_destino) Then
+        MsgBox "Este archivo ya fué Transformado"
+        ActiveWindow.Close
+    Else
+        Application.DisplayAlerts = False
+        ChDir ruta + "\Archivo final"
+       
+        If fso.FileExists(arch) Then
+'           Se recorre las pestañas para buscar pestana_ejecutar
+
+            For i = 1 To Worksheets.Count
+                If Worksheets(i).Name = pestana_ejecutar Then
+                    BuscarHoja1 = True
+                    Exit For
+                Else
+                    BuscarHoja1 = False
+                End If
+            Next i
+            
+'           Si todo sale OK: (No existe el archivo & la pestaña existe) seguimos ejecutando
+            If BuscarHoja1 Then
+                               
+                Workbooks.Open filename:=arch
+                file_name = ActiveWorkbook.Name
+    
+                Sheets(pestana_ejecutar).Select
+
+'               Preguntamos si tiene filtro activado
+                If Worksheets(pestana_ejecutar).FilterMode = True Then
+                    Cells.Select
+                    Selection.AutoFilter
+                    Call accionesMacro(pestana_ejecutar, file_name, pestana_construir, observacion, ruta)
+                Else
+                    Call accionesMacro(pestana_ejecutar, file_name, pestana_construir, observacion, ruta)
+                End If
+            Else
+                MsgBox ("La Pestaña: " & pestana_ejecutar & " no existe")
+                ActiveWindow.Close
+            End If
+        Else
+        'Por ahora sin acción
+        End If
+    End If
+End Sub
+
+Sub accionesMacro(pestana_ejecutar, file_name, pestana_construir, observacion, ruta)
+                    
+                    Application.ScreenUpdating = False
+                    Application.EnableEvents = False
+
+'                   Limpiar Filas en blanco
+                    Columns("A:A").Select
+                    Selection.SpecialCells(xlCellTypeBlanks).Select
+                    Selection.EntireRow.Delete
+                    Range("A1").Select
+
+'                   Application.ScreenUpdating = False
+'                   For x = Sheets(pestana_ejecutar).Range("A" & Rows.Count).End(xlUp).Row To 2 Step -1
+'                       If Application.CountA(Rows(x)) = 0 Then Rows(x).Delete
+'                   Next x
+'                   Application.ScreenUpdating = True
+    
+                    Range("B2").Select
+                    Windows(file_name).Activate
+
+
+        
+' NRO_ID_FACT
+                    Sheets.Add After:=ActiveSheet
+                    ActiveSheet.Name = pestana_construir
+                    
+                    Sheets(pestana_ejecutar).Select
+                    Columns("A:A").Select
+                    Selection.Copy
+                    Sheets(pestana_construir).Select
+                    Columns("A:A").Select
+                    ActiveSheet.Paste
+                    
+'                   Número Total de Filas
+                    Range("A1").Select
+                    Selection.End(xlDown).Select
+                    nro_Fila = ActiveCell.Row
+                    
+                    Range("A1").Select
+                    ActiveCell.FormulaR1C1 = "NRO_ID_FACT"
+                               
+' F_FACT
+                    Range("B1").Select
+                    ActiveCell.FormulaR1C1 = "F_FACT"
+                    Range("B2", "B" & nro_Fila).Select
+                    Selection.Value = DateValue(Date)
+                               
+' NRO_FACT
+                    Sheets(pestana_ejecutar).Select
+
+                    
+                    Columns("N:N").Select
+                    Selection.Copy
+                    Sheets(pestana_construir).Select
+                    Columns("D:D").Select
+                    ActiveSheet.Paste
+                               
+'                   Separar NRO_FACT
+                    Selection.TextToColumns Destination:=Range("C1"), DataType:=xlDelimited, _
+                        TextQualifier:=xlDoubleQuote, ConsecutiveDelimiter:=True, Tab:=False, _
+                        Semicolon:=False, Comma:=False, Space:=True, Other:=False, FieldInfo _
+                        :=Array(Array(1, 1), Array(2, 1)), TrailingMinusNumbers:=True
+                    Range("C1").Select
+                    ActiveCell.FormulaR1C1 = "TIPO"
+                    Range("D1").Select
+                    ActiveCell.FormulaR1C1 = "NRO_FACT"
+         
+' MONTO_FACT
+                    Range("E1").Select
+                    ActiveCell.FormulaR1C1 = "MONTO_FACT"
+                    Range("E2", "E" & nro_Fila).Select
+                    Selection.Value = 0
+    
+' OBSERV
+                    Range("F1").Select
+                    ActiveCell.FormulaR1C1 = "OBSERV"
+                    Range("F2", "F" & nro_Fila).Select
+                    Selection.Value = observacion
+             
+' F_FACT
+                    Range("G1").Select
+                    ActiveCell.FormulaR1C1 = "F_INGRESO"
+                    Range("G2", "G" & nro_Fila).Select
+                    Selection.Value = DateValue(Date)
+                    
+'  F_VTO
+                    Range("H1").Select
+                    ActiveCell.FormulaR1C1 = "F_VTO"
+                    Range("H2", "H" & nro_Fila).Select
+                    Selection.Value = DateValue(Date)
+                
+' MONTO_CONCEP
+                    Sheets(pestana_ejecutar).Select
+                    Columns("K:K").Select
+                    Selection.Copy
+                    Sheets(pestana_construir).Select
+                    Columns("I:I").Select
+                    ActiveSheet.Paste
+                    Range("I1").Select
+                    ActiveCell.FormulaR1C1 = "MONTO_CONCEP"
+        
+' TIPO_DOC
+                    Range("J1").Select
+                    ActiveCell.FormulaR1C1 = "TIPO_DOC"
+                    Range("J2", "J" & nro_Fila).Select
+                    Selection.Value = "nro_afiliado"
+                    
+' NRO_DOC
+                    Sheets(pestana_ejecutar).Select
+                    Columns("C:C").Select
+                    Selection.Copy
+                    Sheets(pestana_construir).Select
+                    Columns("K:K").Select
+                    ActiveSheet.Paste
+                    Selection.TextToColumns Destination:=Range("K1"), DataType:=xlDelimited, _
+                    TextQualifier:=xlDoubleQuote, ConsecutiveDelimiter:=True, Tab:=False, _
+                    Semicolon:=False, Comma:=False, Space:=True, Other:=False, FieldInfo _
+                    :=Array(1, 1), TrailingMinusNumbers:=True
+                    Range("K1").Select
+                    ActiveCell.FormulaR1C1 = "NRO_DOC"
+        
+' AFILIADO
+                    Sheets(pestana_ejecutar).Select
+                    Columns("D:D").Select
+                    Selection.Copy
+                    Sheets(pestana_construir).Select
+                    Range("L:L").Select
+                    ActiveSheet.Paste
+                    Range("L1").Select
+                    ActiveCell.FormulaR1C1 = "AFILIADO"
+        
+' DESCRIPCION
+                    Sheets(pestana_ejecutar).Select
+                    Columns("L:L").Select
+                    Selection.Copy
+                    Sheets(pestana_construir).Select
+                    Columns("M:M").Select
+                    ActiveSheet.Paste
+                    Range("M1").Select
+                    ActiveCell.FormulaR1C1 = "DESCRIPCION"
+                             
+' SERVICIO
+                    Range("N1").Select
+                    ActiveCell.FormulaR1C1 = "SERVICIO"
+                    Range("N2", "N" & nro_Fila).Select
+                    Selection.Value = 0
+                        
+' EPISODIO
+                    Range("O1").Select
+                    ActiveCell.FormulaR1C1 = "EPISODIO"
+                    Range("O2", "O" & nro_Fila).Select
+                    Selection.Value = 0
+        
+' F_PRESTACION
+                    Sheets(pestana_ejecutar).Select
+                    Columns("M:M").Select
+                    Selection.Copy
+                    Sheets(pestana_construir).Select
+                    Columns("P:P").Select
+                    ActiveSheet.Paste
+                    Range("P1").Select
+                    ActiveCell.FormulaR1C1 = "F_PRESTACION"
+        
+        
+' DEBITO
+                    Sheets(pestana_ejecutar).Select
+                    Columns("P:P").Select
+                    Selection.Copy
+                    Sheets(pestana_construir).Select
+                    Columns("Q:Q").Select
+                    ActiveSheet.Paste
+                    Range("Q1").Select
+                    ActiveCell.FormulaR1C1 = "DEBITO"
+        
+' DESCRIP_DEBITO
+                    Sheets(pestana_ejecutar).Select
+                    Range("Z2").Select
+                    ActiveCell.FormulaR1C1 = "=TRIM(RC[-22])&""-_-""&""Nro_Afiliado""&""-_-""&RC[-23]&""#eskemas#""&""Referencia: ""&RC[-19]&""|""&RC[-18]&""|""&TEXT(RC[-13],""dd/mm/aaaa"")&""|""&"" (""&RC[-14]&"") ""&""|""&""Profesional: ""&RC[-20]&""|""&""Argumento: ""&RC[-9]&""|""&""Control: ""&RC[-8]&""|""&""Protocolo: ""&RC[-11]"
+                    Selection.Copy
+                    Range(Selection, "Z" & nro_Fila).Select
+                    ActiveSheet.Paste
+                    Selection.Copy
+                    Selection.PasteSpecial Paste:=xlPasteValues
+    
+                    Columns("Z:Z").Select
+                    Selection.Copy
+                    Sheets(pestana_construir).Select
+                    Columns("R:R").Select
+                    ActiveSheet.Paste
+                    Range("R1").Select
+                    ActiveCell.FormulaR1C1 = "DESCRIP_DEBITO"
+                    Sheets(pestana_ejecutar).Select
+                    Columns("Z:Z").Select
+                    Selection.Delete Shift:=xlToLeft
+                    Sheets(pestana_construir).Select
+                    
+                    
+'   ***** MAQUILLAJE *****
+                    Cells.Select
+                    Selection.Borders(xlDiagonalDown).LineStyle = xlNone
+                    Selection.Borders(xlDiagonalUp).LineStyle = xlNone
+                    Selection.Borders(xlEdgeLeft).LineStyle = xlNone
+                    Selection.Borders(xlEdgeTop).LineStyle = xlNone
+                    Selection.Borders(xlEdgeBottom).LineStyle = xlNone
+                    Selection.Borders(xlEdgeRight).LineStyle = xlNone
+                    Selection.Borders(xlInsideVertical).LineStyle = xlNone
+                    Selection.Borders(xlInsideHorizontal).LineStyle = xlNone
+                    
+                    With Selection.Interior
+                        .Pattern = xlNone
+                        .TintAndShade = 0
+                        .PatternTintAndShade = 0
+                    End With
+        
+                    Range("A1").Select
+                    Range(Selection, Selection.End(xlToRight)).Select
+                    With Selection.Interior
+                        .Pattern = xlNone
+                        .TintAndShade = 0
+                        .PatternTintAndShade = 0
+                    End With
+                    With Selection.Borders(xlEdgeLeft)
+                        .LineStyle = xlContinuous
+                        .ColorIndex = 0
+                        .TintAndShade = 0
+                        .Weight = xlThin
+                    End With
+                    With Selection.Borders(xlEdgeTop)
+                        .LineStyle = xlContinuous
+                        .ColorIndex = 0
+                        .TintAndShade = 0
+                        .Weight = xlThin
+                    End With
+                    With Selection.Borders(xlEdgeBottom)
+                        .LineStyle = xlContinuous
+                        .ColorIndex = 0
+                        .TintAndShade = 0
+                        .Weight = xlThin
+                    End With
+                    With Selection.Borders(xlEdgeRight)
+                        .LineStyle = xlContinuous
+                        .ColorIndex = 0
+                        .TintAndShade = 0
+                        .Weight = xlThin
+                    End With
+                    With Selection.Borders(xlInsideVertical)
+                        .LineStyle = xlContinuous
+                        .ColorIndex = 0
+                        .TintAndShade = 0
+                        .Weight = xlThin
+                    End With
+                    With Selection.Borders(xlInsideHorizontal)
+                        .LineStyle = xlContinuous
+                        .ColorIndex = 0
+                        .TintAndShade = 0
+                        .Weight = xlThin
+                    End With
+                    Range(Selection, Selection.End(xlToRight)).Select
+                    With Selection
+                        .HorizontalAlignment = xlCenter
+                        .VerticalAlignment = xlBottom
+                        .WrapText = False
+                        .Orientation = 0
+                        .AddIndent = False
+                        .IndentLevel = 0
+                        .ShrinkToFit = False
+                        .ReadingOrder = xlContext
+                        .MergeCells = False
+                    End With
+                     
+                    Range("I:I, Q:Q").Select
+                    Selection.NumberFormat = "General"
+                        
+                    Cells.Select
+                    Cells.EntireColumn.AutoFit
+                    Range("A1").Select
+                    Range(Selection, Selection.End(xlToRight)).Select
+                    Selection.Font.Bold = True
+                    
+'                   Quitar Duplicados de toda la Fila
+                    ActiveSheet.Range("$A$1:$R$" & nro_Fila).RemoveDuplicates Columns:=Array(1, 2, 3, 4, 5, 6 _
+                    , 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18), Header:=xlYes
+'
+'                   Columns("B:B").Select
+'                   Selection.SpecialCells(xlCellTypeBlanks).Select
+'                   Selection.EntireRow.Delete
+'                   Range("A1").Select
+
+'                   Guardar el Documento con la palabra TRANSFORMADO
+                    Sheets(pestana_construir).Move
+                    ChDir ruta + "\Archivo final"
+                        ActiveWorkbook.SaveAs filename:= _
+                          ruta + "\Archivo final" + "\TRANSFORMADO_" + file_name _
+                           , FileFormat:=xlExcel8, Password:="", WriteResPassword:="", _
+                        ReadOnlyRecommended:=False, CreateBackup:=False
+                    
+                    ActiveWindow.Close
+                    ActiveWindow.Close
+                    MsgBox "Archivo transformado con éxito"
+End Sub

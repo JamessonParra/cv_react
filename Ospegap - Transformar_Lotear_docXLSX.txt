@@ -1,0 +1,188 @@
+Sub OSPEGAP_Macro()
+'
+' OSPEGAP_Macro Macro
+'
+
+'   Optimización de la MACRO
+    Application.ScreenUpdating = False
+    Application.EnableEvents = False
+    
+'   Nombre para Plan
+    file_name_resp = ActiveWorkbook.Name
+    file_name = Replace(file_name_resp, "Doc_", "")
+    file_name = Replace(file_name, ".xlsx", "")
+    file_name = LCase(file_name)
+    
+    Sheets("Hoja1").Select
+    Sheets("Hoja1").Copy
+    Workbooks(file_name_resp).Close
+    
+'   Eliminamos las filas
+    Range("B2").Select
+    Selection.End(xlDown).Select
+    fila_final = ActiveCell.Row
+    Rows(fila_final & ":" & fila_final).Select
+    Selection.Delete Shift:=xlUp
+    Rows("1:1").Select
+    Selection.Delete Shift:=xlUp
+    
+    Columns("F:F").Select
+    Selection.Copy
+    Columns("W:W").Select
+    ActiveSheet.Paste
+    Selection.TextToColumns Destination:=Range("W1"), DataType:=xlDelimited, _
+        TextQualifier:=xlNone, ConsecutiveDelimiter:=True, Tab:=False, Semicolon _
+        :=False, Comma:=True, Space:=False, Other:=False, OtherChar:=",", _
+        FieldInfo:=Array(Array(1, 1), Array(2, 1)), TrailingMinusNumbers:=True
+    Columns("X:X").Select
+    Selection.TextToColumns Destination:=Range("X1"), DataType:=xlFixedWidth, _
+        OtherChar:=",", FieldInfo:=Array(0, 1), TrailingMinusNumbers:=True
+
+    
+    Columns("X:X").Select
+    Selection.Copy
+    Sheets.Add After:=Sheets(Sheets.Count)
+    Columns("A:A").Select
+    ActiveSheet.Paste
+    Range("A1").Select
+    ActiveCell.FormulaR1C1 = "Nombre"
+    
+    Sheets("Hoja1").Select
+    Columns("W:W").Select
+    Selection.Copy
+    Sheets("Hoja2").Select
+    Columns("B:B").Select
+    ActiveSheet.Paste
+    Range("A1").Select
+    ActiveCell.FormulaR1C1 = "Apellido"
+    Range("C1").Select
+    ActiveCell.FormulaR1C1 = "ApellidoMaterno"
+          
+    Sheets("Hoja1").Select
+    Columns("W:X").Delete Shift:=xlToLeft
+    
+    Sheets("Hoja1").Select
+    Columns("H:H").Select
+    Selection.Copy
+    
+    Sheets("Hoja2").Select
+    Columns("D:D").Select
+    ActiveSheet.Paste
+    
+    Sheets("Hoja1").Select
+    Columns("G:G").Select
+    Selection.Copy
+        
+    Sheets("Hoja2").Select
+    Columns("E:E").Select
+    ActiveSheet.Paste
+    
+    Sheets("Hoja1").Select
+    Columns("D:D").Select
+    Selection.Copy
+    
+    Sheets("Hoja2").Select
+    ActiveCell.FormulaR1C1 = "SEXO"
+        
+    Sheets("Hoja1").Select
+    Columns("D:D").Select
+    Selection.Copy
+    
+    Sheets("Hoja2").Select
+    Columns("F:F").Select
+    ActiveSheet.Paste
+    
+    Sheets("Hoja1").Select
+    Columns("C:C").Select
+    Selection.Copy
+    
+    Sheets("Hoja2").Select
+    Columns("G:G").Select
+    ActiveSheet.Paste
+    
+    Columns("G:G").Select
+    Selection.Replace What:="DU", Replacement:="DNI", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    
+    Sheets("Hoja1").Select
+    Columns("N:N").Select
+    Selection.Copy
+    
+    Sheets("Hoja2").Select
+    Columns("H:H").Select
+    ActiveSheet.Paste
+    
+    Sheets("Hoja1").Select
+    Columns("R:R").Select
+    Selection.Copy
+    
+    Sheets("Hoja2").Select
+    Columns("I:I").Select
+    ActiveSheet.Paste
+    
+    Sheets("Hoja1").Select
+    Columns("B:B").Select
+    Selection.Copy
+    
+    Sheets("Hoja2").Select
+    Columns("J:J").Select
+    ActiveSheet.Paste
+    Range("J1").Select
+    ActiveCell.FormulaR1C1 = "CUIT_TITULAR"
+    
+    Range("K1").Select
+    ActiveCell.FormulaR1C1 = "plan"
+    
+    Range("K2:K" & fila_final - 2).Select
+    With Selection
+        .Value = file_name
+    End With
+    
+    Range("L1").Select
+    ActiveCell.FormulaR1C1 = "f_vto"
+     
+    Rows("1:1").Select
+    Selection.Delete Shift:=xlUp
+    
+    total_lotes = Round((fila_final - 2) / 15000) + 1
+    
+    If total_lotes > 1 Then
+        For i = 0 To fila_final - 2 Step 15000
+            N = N + 1
+            Sheets("Hoja2").Select
+            Rows(i + 1 & ":" & i + 15000).Select
+            Selection.Copy
+            Worksheets.Add(After:=Worksheets(Worksheets.Count)).Name = "lote_" & N
+            ActiveSheet.Paste
+            Range("M1").Select
+            ActiveCell.FormulaR1C1 = " "
+            Cells.Select
+            Selection.NumberFormat = "General"
+            Cells.EntireColumn.AutoFit
+            Range("A1").Select
+        Next
+        
+        Sheets("Hoja1").Name = "listado_origina"
+        Sheets("Hoja2").Name = "listado_completo"
+    Else
+        
+        Rows("1:" & fila_final - 2).Select
+        Selection.Cut
+        Worksheets.Add(After:=Worksheets(Worksheets.Count)).Name = "lote_1" & N
+        ActiveSheet.Paste
+        Range("M1").Select
+        ActiveCell.FormulaR1C1 = " "
+        Cells.Select
+        Selection.NumberFormat = "General"
+        Sheets("Hoja2").Select
+
+        Cells.EntireColumn.AutoFit
+        Range("A1").Select
+        
+        Sheets("Hoja1").Name = "ORIGINAL"
+        Sheets("Hoja2").Name = "Sin_Lotear"
+        
+    End If
+
+End Sub

@@ -1,0 +1,320 @@
+Dim ruta As String
+Dim Archivo_Destino As String
+Sub Armar_Planilla_Dr_Cristian()
+'
+' Armar_Planilla_Dr_Cristian
+' Usada para preparar la Planilla de Trabajo para el Dr. Cristian
+'
+'
+    Application.ScreenUpdating = False
+    Application.EnableEvents = False
+    
+'   Abrir el Archivo dinamicamente
+    pestana_construir = "Planilla_Armada"
+    pestana_ejecutar = "ObSBA HIV"
+    pestana_nueva = "Modificado"
+    ruta = ActiveWorkbook.Path
+    
+    
+'   Se muestra la ventanilla
+    With Application.FileDialog(msoFileDialogFilePicker)
+        .Title = "Elija el .xls para Adaptar"
+        .Filters.Clear
+        .Filters.Add "All Files", "*.*"
+        .Filters.Add "xls.*", "*.xls*"
+        .FilterIndex = 2
+        .AllowMultiSelect = False
+        .InitialFileName = ruta
+
+'       Guardamos el item seleccionado
+        If .Show Then
+            arch = .SelectedItems.Item(1)
+            Workbooks.Open arch
+        End If
+    End With
+   
+    Archivo_Destino = "TRANSFORMADO_" + ActiveWorkbook.Name
+    
+    Set fso = CreateObject("Scripting.FileSystemObject")
+
+'   Validamos que el archivo no exista,
+    If fso.FileExists(Archivo_Destino) Then
+        MsgBox "El Archivo (" + ActiveWorkbook.Name + ") ya fue transformado"
+        ActiveWindow.Close
+        ActiveWindow.Close
+    Else
+        Application.DisplayAlerts = False
+        ChDir ruta
+       
+        If fso.FileExists(arch) Then
+'           Se recorre las pestañas para buscar pestana_ejecutar
+
+            For I = 1 To Worksheets.Count
+                If Worksheets(I).Name = pestana_ejecutar Then
+                    BuscarHoja1 = True
+                    Exit For
+                Else
+                    BuscarHoja1 = False
+                End If
+            Next I
+            
+'           Si todo sale OK: (No existe el archivo & la pestaña existe) seguimos ejecutando
+            If BuscarHoja1 Then
+                               
+                Workbooks.Open Filename:=arch
+                file_name = ActiveWorkbook.Name
+                                                
+                Sheets(pestana_ejecutar).Select
+                                
+                Sheets("ObSBA HIV").Copy After:=Sheets(ActiveWorkbook.Sheets.Count)
+                ActiveSheet.Name = pestana_nueva
+                                
+                Columns("T:T").Select
+                Selection.SpecialCells(xlCellTypeBlanks).Select
+                Selection.EntireRow.Delete
+                
+'               Preguntamos si tiene filtro activado
+                If Sheets(pestana_nueva).AutoFilterMode Then
+                    Cells.Select
+                    Selection.AutoFilter
+                    Call crear_tabla_dinamica(file_name, pestana_ejecutar)
+                    
+                Else
+                    Call crear_tabla_dinamica(file_name, pestana_ejecutar)
+                    
+                End If
+            Else
+                MsgBox ("La Pestaña: " & pestana_ejecutar & " no existe")
+                ActiveWindow.Close
+            End If
+        Else
+        'Por ahora sin acción
+        End If
+    End If
+End Sub
+Sub crear_tabla_dinamica(nombre_archivo, pestana_ejecutar)
+    
+
+    Application.ScreenUpdating = False
+    Application.EnableEvents = False
+    
+    Workbooks(nombre_archivo).Activate
+    Sheets(pestana_ejecutar).Select
+    
+    Worksheets.Add(After:=Sheets(ActiveWorkbook.Sheets.Count)).Name = "preparar_datos"
+    ActiveWorkbook.PivotCaches.Create(SourceType:=xlDatabase, SourceData:= _
+        "Modificado!R1C1:R1585C23", Version:=xlPivotTableVersion10).CreatePivotTable _
+        TableDestination:="preparar_datos!R3C1", TableName:="Tabla dinámica1", _
+        DefaultVersion:=xlPivotTableVersion10
+    Sheets("preparar_datos").Select
+    Cells(3, 1).Select
+    
+    With ActiveSheet.PivotTables("Tabla dinámica1").PivotFields("Afiliado")
+        .Orientation = xlRowField
+        .Position = 1
+    End With
+    With ActiveSheet.PivotTables("Tabla dinámica1").PivotFields("SEGMENTO")
+        .Orientation = xlRowField
+        .Position = 2
+    End With
+    Range("A6").Select
+    ActiveSheet.PivotTables("Tabla dinámica1").PivotFields("Afiliado").Subtotals = _
+        Array(False, False, False, False, False, False, False, False, False, False, False, False)
+    Sheets("preparar_datos").Select
+    With ActiveSheet.PivotTables("Tabla dinámica1").PivotFields("Principio Activo")
+        .Orientation = xlRowField
+        .Position = 3
+    End With
+    Range("B6").Select
+    ActiveSheet.PivotTables("Tabla dinámica1").PivotFields("SEGMENTO").Subtotals = _
+        Array(False, False, False, False, False, False, False, False, False, False, False, False)
+    Sheets("Modificado").Select
+    Sheets("preparar_datos").Select
+    With ActiveSheet.PivotTables("Tabla dinámica1").PivotFields("Medicamento")
+        .Orientation = xlRowField
+        .Position = 4
+    End With
+    Range("C6").Select
+    ActiveSheet.PivotTables("Tabla dinámica1").PivotFields("Principio Activo"). _
+        Subtotals = Array(False, False, False, False, False, False, False, False, False, False, _
+        False, False)
+    Sheets("Modificado").Select
+    
+    Sheets("preparar_datos").Select
+    With ActiveSheet.PivotTables("Tabla dinámica1").PivotFields("Unidades")
+        .Orientation = xlRowField
+        .Position = 5
+    End With
+    Range("D6").Select
+    ActiveSheet.PivotTables("Tabla dinámica1").PivotFields("Medicamento"). _
+        Subtotals = Array(False, False, False, False, False, False, False, False, False, False, _
+        False, False)
+
+    Sheets("preparar_datos").Select
+    With ActiveSheet.PivotTables("Tabla dinámica1").PivotFields("F.Entrega")
+        .Orientation = xlRowField
+        .Position = 6
+    End With
+    Range("E6").Select
+    ActiveSheet.PivotTables("Tabla dinámica1").PivotFields("Unidades").Subtotals = _
+        Array(False, False, False, False, False, False, False, False, False, False, False, False)
+    Sheets("preparar_datos").Select
+    With ActiveSheet.PivotTables("Tabla dinámica1").PivotFields("Droguería")
+        .Orientation = xlRowField
+        .Position = 7
+    End With
+    Range("F6").Select
+    ActiveSheet.PivotTables("Tabla dinámica1").PivotFields("F.Entrega").Subtotals _
+        = Array(False, False, False, False, False, False, False, False, False, False, False, False _
+        )
+    With ActiveSheet.PivotTables("Tabla dinámica1").PivotFields("REMITO")
+        .Orientation = xlRowField
+        .Position = 8
+    End With
+    ActiveWindow.SmallScroll ToRight:=1
+    Range("G6").Select
+    ActiveSheet.PivotTables("Tabla dinámica1").PivotFields("Droguería").Subtotals _
+        = Array(False, False, False, False, False, False, False, False, False, False, False, False _
+        )
+    Sheets("preparar_datos").Select
+    With ActiveSheet.PivotTables("Tabla dinámica1").PivotFields("Pconv * Unid")
+        .Orientation = xlRowField
+        .Position = 9
+    End With
+    ActiveSheet.PivotTables("Tabla dinámica1").PivotFields("REMITO").Subtotals = _
+        Array(False, False, False, False, False, False, False, False, False, False, False, False)
+        
+    Call Maquillar_datos
+    
+End Sub
+Sub Maquillar_datos()
+    
+    Application.ScreenUpdating = False
+    Application.EnableEvents = False
+     
+    Range("I4").Select
+    Selection.End(xlDown).Select
+    nro_Fila = ActiveCell.Row
+    
+    Range("A4:I" & nro_Fila).Select
+    Selection.Copy
+    Worksheets.Add(After:=Sheets(ActiveWorkbook.Sheets.Count)).Name = "Tabla_Transformada"
+    Selection.Insert Shift:=xlDown
+    Columns("A:A").EntireColumn.AutoFit
+    Cells.Select
+    Cells.EntireColumn.AutoFit
+    Range("A1").Select
+    ActiveSheet.Paste
+    
+    Columns("A:A").Select
+    Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
+   
+    Range("A1").Select
+    ActiveCell.FormulaR1C1 = "Nº DE ORDEN"
+    
+    Range("B1").Select
+    ActiveCell.FormulaR1C1 = "AFILIADO"
+  
+    Columns("C:C").Select
+    Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
+    
+    Range("C1").Select
+    ActiveCell.FormulaR1C1 = "DNI"
+       
+    Columns("D:D").Select
+    Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
+    
+    Range("D1").Select
+    ActiveCell.FormulaR1C1 = "Nº DE INF"
+   
+    Range("E1").Select
+    ActiveCell.FormulaR1C1 = "PATOLOGÍA"
+    
+    Range("F1").Select
+    ActiveCell.FormulaR1C1 = "DROGA"
+   
+    Range("G1").Select
+    ActiveCell.FormulaR1C1 = "NOMBRE COMERCIAL"
+        
+    Range("H1").Select
+    ActiveCell.FormulaR1C1 = "TOTAL"
+  
+    Columns("I:I").Select
+    Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
+    
+    Range("I1").Select
+    ActiveCell.FormulaR1C1 = "CÓDIGO  NOMENCL"
+   
+    Range("J1").Select
+    ActiveCell.FormulaR1C1 = "PERIODO"
+    
+    Columns("J:J").Select
+    Selection.NumberFormat = "mmm-yyyy"
+      
+    Range("K1").Select
+    ActiveCell.FormulaR1C1 = "PROVEDOR"
+       
+    Range("M1").Select
+    ActiveCell.FormulaR1C1 = "PCONV * UNID"
+        
+    Rows("1:1").Select
+    Selection.Font.Bold = True
+    Range("A1").Select
+    Range(Selection, ActiveCell.SpecialCells(xlLastCell)).Select
+    Selection.Borders(xlDiagonalDown).LineStyle = xlNone
+    Selection.Borders(xlDiagonalUp).LineStyle = xlNone
+    With Selection.Borders(xlEdgeLeft)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlEdgeTop)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlEdgeBottom)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlEdgeRight)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlInsideVertical)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlInsideHorizontal)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    Range("A1").Select
+    
+    Cells.Select
+    Cells.EntireColumn.AutoFit
+    Range("A1").Select
+       
+    Sheets("Tabla_Transformada").Move
+    ChDir ruta
+    ActiveWorkbook.SaveAs Filename:=Archivo_Destino, FileFormat:=xlExcel8, Password:="", WriteResPassword:="", ReadOnlyRecommended:=False, CreateBackup:=False
+    ActiveWindow.Close
+    Sheets("preparar_datos").Select
+    ActiveWindow.SelectedSheets.Delete
+    Sheets("Modificado").Select
+    ActiveWindow.SelectedSheets.Delete
+    ActiveWindow.Close
+    MsgBox "Archivo Generado con el nombre: " + Archivo_Destino
+    ActiveWindow.Close
+End Sub
+
